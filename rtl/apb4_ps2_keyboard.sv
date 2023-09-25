@@ -9,9 +9,9 @@
 // See the Mulan PSL v2 for more details.
 
 
-module apb4_ps2 (
+module apb4_ps2_keyboard (
     // verilog_format: off
-    apb4_if       apb4,
+    apb4_if.slave apb4,
     // verilog_format: on
     input logic   ps2_clk_i,
     input logic   ps2_dat_i,
