@@ -56,9 +56,13 @@ module apb4_ps2_keyboard (
     if (~apb4.hresetn) begin
       r_rd_ptr     <= '0;
       r_tmp_outdat <= '0;
+      irq_o        <= '0;
     end else if ((apb4.psel && apb4.penable) && (~apb4.pwrite)) begin
       r_tmp_outdat <= (r_rd_ptr == r_wr_ptr) ? '0 : r_fifo[r_rd_ptr];
       r_rd_ptr     <= (r_rd_ptr == r_wr_ptr) ? r_rd_ptr : r_rd_ptr + 1'b1;
+      irq_o        <= 1'b1;
+    end else begin
+      irq_o <= 1'b0;
     end
   end
 
