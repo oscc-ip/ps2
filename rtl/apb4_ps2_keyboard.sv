@@ -8,7 +8,6 @@
 // MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 // See the Mulan PSL v2 for more details.
 
-
 module apb4_ps2_keyboard (
     // verilog_format: off
     apb4_if.slave apb4,
@@ -25,11 +24,11 @@ module apb4_ps2_keyboard (
   logic [2:0] r_clk_sync;
   logic       s_fall_edge;
   logic [7:0] r_tmp_outdat;
+
+  assign s_fall_edge = r_clk_sync[2] & (~r_clk_sync[1]);
   always_ff @(posedge apb4.hclk) begin
     r_clk_sync <= {r_clk_sync[1:0], ps2_clk_i};
   end
-
-  assign s_fall_edge = r_clk_sync[2] & (~r_clk_sync[1]);
 
   always_ff @(posedge apb4.hclk) begin
     if (~abp4.hresetn) begin
@@ -41,6 +40,7 @@ module apb4_ps2_keyboard (
           if ((r_buf[0] == 0) && ps2_dat_i && (^r_buf[9:1])) begin
             r_fifo[r_wr_ptr] <= r_buf[8:1];
             r_wr_ptr         <= r_wr_ptr + 1'b1;
+            irq_o            <= 1'b1; // NOTE: BUG
           end
           r_cnt <= '0;
         end else begin
@@ -60,9 +60,7 @@ module apb4_ps2_keyboard (
     end else if ((apb4.psel && apb4.penable) && (~apb4.pwrite)) begin
       r_tmp_outdat <= (r_rd_ptr == r_wr_ptr) ? '0 : r_fifo[r_rd_ptr];
       r_rd_ptr     <= (r_rd_ptr == r_wr_ptr) ? r_rd_ptr : r_rd_ptr + 1'b1;
-      irq_o        <= 1'b1;
-    end else begin
-      irq_o <= 1'b0;
+      irq_o        <= (r_rd_ptr == r_wr_ptr) ? irq_o : 1'b0;
     end
   end
 
