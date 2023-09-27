@@ -22,10 +22,10 @@ module apb4_ps2_keyboard (
   logic [9:0] r_buf;
   logic [3:0] r_cnt;
   logic [2:0] r_clk_sync;
-  logic       s_fall_edge;
+  logic       s_negedge;
   logic [7:0] r_tmp_outdat;
 
-  assign s_fall_edge = r_clk_sync[2] & (~r_clk_sync[1]);
+  assign s_negedge = r_clk_sync[2] & (~r_clk_sync[1]);
   always_ff @(posedge apb4.hclk) begin
     r_clk_sync <= {r_clk_sync[1:0], ps2_clk_i};
   end
@@ -35,12 +35,12 @@ module apb4_ps2_keyboard (
       r_cnt    <= '0;
       r_wr_ptr <= '0;
     end else begin
-      if (s_fall_edge) begin
+      if (s_negedge) begin
         if (r_cnt == 4'd10) begin
           if ((r_buf[0] == 0) && ps2_dat_i && (^r_buf[9:1])) begin
             r_fifo[r_wr_ptr] <= r_buf[8:1];
             r_wr_ptr         <= r_wr_ptr + 1'b1;
-            irq_o            <= 1'b1; // NOTE: BUG
+            irq_o            <= 1'b1;  // NOTE: BUG
           end
           r_cnt <= '0;
         end else begin
