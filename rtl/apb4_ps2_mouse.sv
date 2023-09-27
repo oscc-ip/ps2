@@ -12,12 +12,17 @@ module apb4_ps2_mouse (
     // verilog_format: off
     apb4_if.slave apb4,
     // verilog_format: on
-    input logic   ps2_clk_i,
-    input logic   ps2_dat_i,
+    input  logic  ps2_clk_i,
+    output logic  ps2_clk_o,
+    output logic  ps2_clk_oen_o,
+    input  logic  ps2_dat_i,
+    output logic  ps2_dat_o,
+    output logic  ps2_dat_oen_o,
     output logic  irq_o
 );
 
-  logic [7:0] r_fifo[0:7];
+
+  logic [23:0] r_fifo[0:7];
   logic [2:0] r_wr_ptr, r_rd_ptr;
   logic [9:0] r_buf;
   logic [3:0] r_cnt;
