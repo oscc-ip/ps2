@@ -21,16 +21,12 @@ module apb4_ps2_mouse (
     output logic  irq_o
 );
 
-
-
-
-
   logic [23:0] r_fifo[0:7];
   logic [2:0] r_wr_ptr, r_rd_ptr;
-  logic [9:0] r_buf;
-  logic [3:0] r_cnt;
-  logic [2:0] r_clk_sync;
-  logic       s_negedge;
+  logic [ 9:0] r_buf;
+  logic [ 3:0] r_cnt;
+  logic [ 2:0] r_clk_sync;
+  logic        s_negedge;
   logic [23:0] r_rd_dat;
 
   assign s_negedge = r_clk_sync[2] & (~r_clk_sync[1]);
@@ -62,13 +58,13 @@ module apb4_ps2_mouse (
   assign apb4.prdata = {24'b0, r_rd_dat};
   always_ff @(posedge apb4.hclk, negedge abp4.hresetn) begin
     if (~apb4.hresetn) begin
-      r_rd_ptr     <= '0;
+      r_rd_ptr <= '0;
       r_rd_dat <= '0;
-      irq_o        <= '0;
+      irq_o    <= '0;
     end else if ((apb4.psel && apb4.penable) && (~apb4.pwrite)) begin
       r_rd_dat <= (r_rd_ptr == r_wr_ptr) ? '0 : r_fifo[r_rd_ptr];
-      r_rd_ptr     <= (r_rd_ptr == r_wr_ptr) ? r_rd_ptr : r_rd_ptr + 1'b1;
-      irq_o        <= (r_rd_ptr == r_wr_ptr) ? irq_o : 1'b0;
+      r_rd_ptr <= (r_rd_ptr == r_wr_ptr) ? r_rd_ptr : r_rd_ptr + 1'b1;
+      irq_o    <= (r_rd_ptr == r_wr_ptr) ? irq_o : 1'b0;
     end
   end
 
