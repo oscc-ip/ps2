@@ -82,6 +82,7 @@ endtask
 
 task automatic PS2Test::test_rd_code(input bit [31:0] run_times = 1000);
   $display("=== [test rd kdb code] ===");
+  this.read(`PS2_STAT_ADDR);  // clear irq
   this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b10 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
   for (int i = 0; i < run_times; i++) begin
     this.wr_val = $random & 8'hFF;
@@ -93,18 +94,22 @@ endtask
 
 task automatic PS2Test::test_irq(input bit [31:0] run_times = 10);
   super.test_irq();
+  this.read(`PS2_STAT_ADDR);  // clear irq
   this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b10 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
-  this.kdb_sendcode(8'hAE);
-  repeat (60) @(posedge this.apb4.pclk);
-  this.kdb_sendcode(8'hB3);
-  this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b11 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
+  for (int i = 0; i < run_times + 8; i++) begin
+    this.wr_val = $random & 8'hFF;
+    this.kdb_sendcode(this.wr_val);
+    $display("%t wr val: %h", $time, this.wr_val);
+    repeat (60) @(posedge this.apb4.pclk);
+  end
 
-  for (int i = 0; i < 4; i++) begin
-    this.read(`PS2_STAT_ADDR);
-    $display("%t stat reg: %h", $time, super.rd_data);
+  this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b11 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
+  for (int i = 0; i < run_times; i++) begin
+    wait (this.ps2.irq_o);
     this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b10 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
     this.read(`PS2_DATA_ADDR);
     $display("%t data reg: %h", $time, super.rd_data);
+    this.read(`PS2_STAT_ADDR);  // clear irq
     this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b11 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
     repeat (17) @(posedge this.apb4.pclk);
   end
