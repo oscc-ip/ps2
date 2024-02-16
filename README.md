@@ -16,7 +16,7 @@
 </p>
 
 ## Features
-* Support ps/2 keyboard only
+* Support PS/2 keyboard only
 * Configurable receive fifo depth
 * Maskable fifo no-empty interrupt
 * Static synchronous design
