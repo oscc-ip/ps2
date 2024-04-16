@@ -43,7 +43,7 @@ module apb4_ps2 (
   assign ps2.irq_o       = s_bit_itf;
 
   assign s_ps2_ctrl_en   = s_apb4_wr_hdshk && s_apb4_addr == `PS2_CTRL;
-  assign s_ps2_ctrl_d    = s_ps2_ctrl_en ? apb4.pwdata[`PS2_CTRL_WIDTH-1:0] : s_ps2_ctrl_q;
+  assign s_ps2_ctrl_d    = apb4.pwdata[`PS2_CTRL_WIDTH-1:0];
   dffer #(`PS2_CTRL_WIDTH) u_ps2_ctrl_dffer (
       apb4.pclk,
       apb4.presetn,
