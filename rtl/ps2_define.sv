@@ -20,12 +20,12 @@
  * PS2_DATA:
  * BITS:   | 31:8 | 7:0  |
  * FIELDS: | RES  | DATA |
- * PERMS:  | NONE | R    |
+ * PERMS:  | NONE | RO   |
  * ---------------------------
  * PS2_STAT:
  * BITS:   | 31:1 | 0   |
  * FIELDS: | RES  | ITF |
- * PERMS:  | NONE | R   |
+ * PERMS:  | NONE | RO  |
  * ---------------------------
 */
 

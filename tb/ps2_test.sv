@@ -86,6 +86,7 @@ task automatic PS2Test::test_rd_code(input bit [31:0] run_times = 1000);
   this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b10 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
   for (int i = 0; i < run_times; i++) begin
     this.wr_val = $random & 8'hFF;
+    this.init_ps2();
     this.kdb_sendcode(this.wr_val);
     #20;
     this.rd_check(`PS2_DATA_ADDR, "DATA REG", this.wr_val, Helper::EQUL);
@@ -98,6 +99,7 @@ task automatic PS2Test::test_irq(input bit [31:0] run_times = 10);
   this.wr_rd_check(`PS2_CTRL_ADDR, "CTRL REG", 32'b10 & {`PS2_CTRL_WIDTH{1'b1}}, Helper::EQUL);
   for (int i = 0; i < run_times + 8; i++) begin
     this.wr_val = $random & 8'hFF;
+    this.init_ps2();
     this.kdb_sendcode(this.wr_val);
     $display("%t wr val: %h", $time, this.wr_val);
     repeat (60) @(posedge this.apb4.pclk);
