@@ -67,7 +67,7 @@ reset value: `0x0000_0000`
 ### Program Guide
 These registers can be accessed by 4-byte aligned read and write. the C-like pseudocode of the init operation:
 ```c
-ps2.CTRL.[EN, ITN] = 1  // enable receive and interrupt function
+ps2.CTRL.[EN, ITN] = 1 // enable receive and interrupt function
 
 ```
 read keyboard code:
