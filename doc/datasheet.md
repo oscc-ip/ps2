@@ -36,57 +36,55 @@ The `ps2` IP is a fully parameterised soft IP implementing the IBM compatible PS
 
 reset value: `0x0000_0000`
 
-* EN:
-* ITN:
+* EN: receive data enable
+    * `EN = 1'b0`: receive data disabled
+    * `EN = 1'b1`: receive data enabled
 
+* ITN: interrupt enable
+    * `ITN = 1'b0`: interrupt disabled
+    * `ITN = 1'b1`: interrupt enabled
 
 #### Data Register
 | bit | access  | description |
 |:---:|:-------:| :---------: |
-| `[31:8]` | RO | MTIMEL |
+| `[31:8]` | none | reserved |
+| `[7:0]` | RO | DATA |
 
 reset value: `0x0000_0000`
 
-* MTIMEL: the low 32-bit of 64-bit `mtime` CSR register
+* DATA: ps2 keyboard code
 
 #### State Register
 | bit | access  | description |
 |:---:|:-------:| :---------: |
-| `[31:0]` | RO | MTIMEH |
+| `[31:1]` | none | reserved |
+| `[0:0]` | RO | ITF |
 
 reset value: `0x0000_0000`
 
-* MTIMEH: the high 32-bit of 64-bit `mtime` CSR register
+* ITF: interrupt flag
 
 ### Program Guide
-The software operation of `ps2` is simple. These registers can be accessed by 4-byte aligned read and write. the C-like pseudocode of the timer interrupt operation:
+These registers can be accessed by 4-byte aligned read and write. the C-like pseudocode of the init operation:
 ```c
-ps2.MTIMECMPL = MTIMECMP_LOW_32_bit  // write low 32-bit mtimecmp register
-ps2.MTIMECMPH = MTIMECMP_HIGH_32_bit // write high 32-bit mtimecmp register
-... // some codes
-
-// === mtime interrupt handle start ===
-// add new value to the mtime interrupt
-ps2.MTIMECMPL = UPDATE_DELTA_VALUE & 0x0000FFFF
-ps2.MTIMECMPH = UPDATE_DELTA_VALUE & 0xFFFF0000
-// === mtime interrupt handle end ===
-
-... // some codes
+ps2.CTRL.[EN, ITN] = 1  // enable receive and interrupt function
 
 ```
-software interrupt operation:
+read keyboard code:
 ```c
-ps2.MSIP = 1 // trigger software interrupt
-... // some codes
+// polling style
+while(1) {
+    if(ps2.STAT.ITF == 1) {
+        kdb_code_8_bit = ps2.DATA // read the kdb code
+    }
+}
 
-// === software interrupt handle start ===
-ps2.MSIP = 0 // clear the software interrupt
-// === software interrupt handle end ===
-
-... // some codes
+// interrupt style
+ps2_interrupt_handle() {
+    kdb_code_8_bit = ps2.DATA // read the kdb code
+}
 
 ```
-
 ### Resoureces
 ### References
 ### Revision History
