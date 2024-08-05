@@ -85,6 +85,8 @@ ps2_interrupt_handle() {
 }
 
 ```
+complete driver and test codes in [driver](../driver/) dir.
+
 ### Resoureces
 ### References
 ### Revision History
