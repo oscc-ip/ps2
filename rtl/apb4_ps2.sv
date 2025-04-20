@@ -8,10 +8,7 @@
 // MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 // See the Mulan PSL v2 for more details.
 
-`include "register.sv"
-`include "edge_det.sv"
-`include "fifo.sv"
-`include "ps2_define.sv"
+`include "ps2_define.svh"
 
 // only support keyboard now
 module apb4_ps2 (

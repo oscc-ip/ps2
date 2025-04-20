@@ -8,8 +8,8 @@
 // MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 // See the Mulan PSL v2 for more details.
 
-`ifndef INC_PS2_DEF_SV
-`define INC_PS2_DEF_SV
+`ifndef INC_PS2_DEF_SVH
+`define INC_PS2_DEF_SVH
 
 /* register mapping
  * PS2_CTRL:

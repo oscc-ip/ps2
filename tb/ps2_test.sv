@@ -8,11 +8,7 @@
 // MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 // See the Mulan PSL v2 for more details.
 
-`ifndef INC_PS2_TEST_SV
-`define INC_PS2_TEST_SV
-
-`include "apb4_master.sv"
-`include "ps2_define.sv"
+`include "ps2_define.svh"
 
 class PS2Test extends APB4Master;
   string                        name;
@@ -117,4 +113,3 @@ task automatic PS2Test::test_irq(input bit [31:0] run_times = 10);
   end
 
 endtask
-`endif
