@@ -43,13 +43,4 @@
 `define PS2_STAT_WIDTH 1
 // verilog_format: on
 
-interface ps2_if ();
-  logic ps2_clk_i;
-  logic ps2_dat_i;
-  logic irq_o;
-
-  modport dut(input ps2_clk_i, input ps2_dat_i, output irq_o);
-  modport tb(output ps2_clk_i, output ps2_dat_i, input irq_o);
-endinterface
-
 `endif
